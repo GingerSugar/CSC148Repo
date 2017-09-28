@@ -1,5 +1,3 @@
-"""asdasdasdasdasdasdasd"""
-
 """Assignment 1 - Bike-share objects
 
 === CSC148 Fall 2017 ===
