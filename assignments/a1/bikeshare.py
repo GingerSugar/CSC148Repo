@@ -1,3 +1,5 @@
+"""asdasdasdasdasdasdasd"""
+
 """Assignment 1 - Bike-share objects
 
 === CSC148 Fall 2017 ===
@@ -17,7 +19,6 @@ a graphical window.
 """
 from datetime import datetime
 from typing import Tuple
-
 
 # Sprite files
 STATION_SPRITE = 'stationsprite.png'
@@ -127,6 +128,7 @@ class Ride(Drawable):
 
 if __name__ == '__main__':
     import python_ta
+
     python_ta.check_all(config={
         'allowed-import-modules': [
             'doctest', 'python_ta', 'typing',
