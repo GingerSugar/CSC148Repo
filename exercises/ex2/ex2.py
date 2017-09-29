@@ -22,8 +22,8 @@ Notes:
      against what you did for Exercise 1.
 """
 # You will find these imports useful. Please do not import any others.
-from math import sqrt, floor
-import random          # used to generate random numbers
+from math import sqrt, floor, ceil
+import random  # used to generate random numbers
 from typing import Dict, Optional, Tuple
 
 
@@ -158,30 +158,74 @@ class Vehicle:
             self.fuel -= needed
 
 
-# TODO: Implement this class (you can use your work from Exercise 1)
 class Car(Vehicle):
     """A car in the Super Duper system.
 
     A car can only move vertically and horizontally, and uses
     one unit of fuel per unit distance travelled.
     """
-    pass
+
+    def __init__(self, new_fuel: int) -> None:
+        """Initializes a new Car"""
+        super().__init__(new_fuel, (0, 0))
+
+    def fuel_needed(self, new_x: int, new_y: int) -> int:
+        """Return how much fuel would be used to move to the given position.
+
+        Note: the amount returned may be larger than self.fuel,
+        indicating that this vehicle may not move to the given position.
+        """
+
+        return abs(new_x - self.position[0]) + abs(new_y - self.position[1])
 
 
-# TODO: Implement this class. Note: We've imported the math functions for you.
 class Helicopter(Vehicle):
     """A helicopter. Can travel diagonally between points."""
-    pass
+
+    def __init__(self, new_fuel: int) -> None:
+        """Initializes a new Helicopter"""
+        super().__init__(new_fuel, (3, 5))
+
+    def fuel_needed(self, new_x: int, new_y: int) -> int:
+        """Return how much fuel would be used to move to the given position.
+
+        Note: the amount returned may be larger than self.fuel,
+        indicating that this vehicle may not move to the given position.
+
+        >>> h1 = Helicopter(100)
+        >>> h1.move(4,5)
+        >>> h1.fuel
+        99
+        """
+        x = self.position[0]
+        y = self.position[1]
+        return int(ceil(sqrt(float(new_x - x) ** 2 + float(new_y - y) ** 2)))
 
 
-# TODO: Implement this class. Note: We've imported the random module for you.
 class UnreliableMagicCarpet(Vehicle):
     """An unreliable magic carpet.
 
     Does not need to use fuel to travel, but ends up in a random position
     within two horizontal and two vertical units from the target destination.
     """
-    pass
+
+    def __init__(self, new_fuel: int) -> None:
+        """Initializes a new UnreliableMagicCarpet"""
+        super().__init__(new_fuel, (random.randint(-10, 10), random.randint(-10, 10)))
+
+    def fuel_needed(self, new_x: int, new_y: int) -> int:
+        """Always returns 0, because the Unreliable Magic Carpet uses no fuel to move
+        """
+        return 0
+
+    def move(self, new_x: int, new_y: int) -> None:
+        """Move this carpet to a new position.
+
+        Will always move to a 5 by 5 box around the set point
+        """
+        dx = random.randint(-2, 2)
+        dy = random.randint(-2, 2)
+        self.position = (new_x + dx, new_y + dy)
 
 
 ##############################################################################
@@ -208,6 +252,7 @@ def reverse_top_two(stack: 'Stack') -> None:
 
 if __name__ == '__main__':
     import doctest
+
     doctest.testmod()
 
     # Uncomment and run before final submission. This checks for style errors
