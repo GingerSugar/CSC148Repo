@@ -22,7 +22,7 @@ Notes:
      against what you did for Exercise 1.
 """
 # You will find these imports useful. Please do not import any others.
-from math import sqrt, floor, ceil
+from math import sqrt, ceil
 import random  # used to generate random numbers
 from typing import Dict, Optional, Tuple
 
@@ -88,7 +88,7 @@ class SuperDuperManager:
         if id_ in self._vehicles:
             self._vehicles[id_].move(new_x, new_y)
 
-    def get_vehicle_position(self, id_: int) -> Optional[Tuple[int, int]]:
+    def get_vehicle_position(self, id_: str) -> Optional[Tuple[int, int]]:
         """Return the position of the vehicle with the given id.
 
         Return a tuple of the (x, y) position of the vehicle.
@@ -174,6 +174,15 @@ class Car(Vehicle):
 
         Note: the amount returned may be larger than self.fuel,
         indicating that this vehicle may not move to the given position.
+
+        >>> c1 = Car(100)
+        >>> c1.move(4,4)
+        >>> c1.fuel
+        92
+        >>> c2 = Car(100)
+        >>> c2.move(100, 100)
+        >>> c2.fuel
+        100
         """
 
         return abs(new_x - self.position[0]) + abs(new_y - self.position[1])
@@ -189,6 +198,7 @@ class Helicopter(Vehicle):
     def fuel_needed(self, new_x: int, new_y: int) -> int:
         """Return how much fuel would be used to move to the given position.
 
+
         Note: the amount returned may be larger than self.fuel,
         indicating that this vehicle may not move to the given position.
 
@@ -196,6 +206,14 @@ class Helicopter(Vehicle):
         >>> h1.move(4,5)
         >>> h1.fuel
         99
+        >>> h2 = Helicopter(100)
+        >>> h2.move(4, 6)
+        >>> h2.fuel
+        98
+        >>> h3 = Helicopter(100)
+        >>> h3.move(100,100)
+        >>> h3.fuel
+        100
         """
         x = self.position[0]
         y = self.position[1]
@@ -211,10 +229,13 @@ class UnreliableMagicCarpet(Vehicle):
 
     def __init__(self, new_fuel: int) -> None:
         """Initializes a new UnreliableMagicCarpet"""
-        super().__init__(new_fuel, (random.randint(-10, 10), random.randint(-10, 10)))
+        super().__init__(new_fuel,
+                         (random.randint(-10, 10),
+                          random.randint(-10, 10)))
 
     def fuel_needed(self, new_x: int, new_y: int) -> int:
-        """Always returns 0, because the Unreliable Magic Carpet uses no fuel to move
+        """Always returns 0, because the
+        Unreliable Magic Carpet uses no fuel to move
         """
         return 0
 
@@ -245,9 +266,19 @@ def reverse_top_two(stack: 'Stack') -> None:
     1
     >>> stack.pop()
     2
+
+    >>> stack = Stack()
+    >>> stack.push(1)
+    >>> reverse_top_two(stack)
+    Traceback (most recent call last):
+    ...
+    IndexError: pop from empty list
     """
-    # TODO: implement this function after you've read about Stacks.
-    pass
+
+    top = stack.pop()
+    bottom = stack.pop()
+    stack.push(top)
+    stack.push(bottom)
 
 
 if __name__ == '__main__':
@@ -258,6 +289,7 @@ if __name__ == '__main__':
     # Uncomment and run before final submission. This checks for style errors
     # in addition to code inconsistencies and forbidden Python features.
     # import python_ta
+    #
     # python_ta.check_all(config={
     #     'allowed-import-modules': [
     #         'doctest', 'python_ta', 'typing',
