@@ -54,6 +54,17 @@ def test_new_carpet_attributes(id_, fuel):
     assert abs(pos[1]) <= 10
 
 
+@given(text(min_size=1))
+def test_more_new_carpet_attributes(id_):
+    manager = SuperDuperManager()
+    manager.add_vehicle('UnreliableMagicCarpet', id_, 100)
+    assert manager.get_vehicle_fuel(id_) == 100
+    manager.move_vehicle(id_, 10, 10)
+    pos = manager.get_vehicle_position(id_)
+    assert abs(pos[0] - 10) <= 2
+    assert abs(pos[1] - 10) <= 2
+
+
 @given(text(min_size=1), integers(min_value=1),
        integers(min_value=-200, max_value=200),
        integers(min_value=-200, max_value=200))
