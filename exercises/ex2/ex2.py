@@ -286,13 +286,11 @@ if __name__ == '__main__':
 
     doctest.testmod()
 
-    # Uncomment and run before final submission. This checks for style errors
-    # in addition to code inconsistencies and forbidden Python features.
-    # import python_ta
-    #
-    # python_ta.check_all(config={
-    #     'allowed-import-modules': [
-    #         'doctest', 'python_ta', 'typing',
-    #         'math', 'random', 'obfuscated_stack'
-    #     ]
-    # })
+    import python_ta
+
+    python_ta.check_all(config={
+        'allowed-import-modules': [
+            'doctest', 'python_ta', 'typing',
+            'math', 'random', 'obfuscated_stack'
+        ]
+    })

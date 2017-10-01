@@ -35,24 +35,36 @@ class Simulation:
         A list of all the rides in this simulation.
         Note that not all rides might be used, depending on the timeframe
         when the simulation is run.
+    active_rides:
+        A list of all active rides within the time frame
     all_stations:
         A dictionary containing all the stations in this simulation.
     visualizer:
         A helper class for visualizing the simulation.
     """
-    all_stations: Dict[str, Station]
     all_rides: List[Ride]
+    active_rides: List[Ride]
+    all_stations: Dict[str, Station]
     visualizer: Visualizer
 
     def __init__(self, station_file: str, ride_file: str) -> None:
         """Initialize this simulation with the given configuration settings.
         """
         self.visualizer = Visualizer()
+        self.all_stations = create_stations(station_file)
+        self.all_rides = create_rides(ride_file, self.all_stations)
+        self.active_rides = []
 
     def run(self, start: datetime, end: datetime) -> None:
         """Run the simulation from <start> to <end>.
         """
         step = timedelta(minutes=1)  # Each iteration spans one minute of time
+
+        while start <= end:
+            self._update_active_rides(start)
+            self.visualizer.render_drawables(list(self.all_stations.values()) + self.active_rides, start)
+            print(start)
+            start += step
 
         # Leave this code at the very bottom of this method.
         # It will keep the visualization window open until you close
@@ -79,7 +91,14 @@ class Simulation:
             period but ends during or after the simulation's time period,
             it should still be added to self.active_rides.
         """
-        pass
+        for ride in self.all_rides:
+            has_ride = ride in self.active_rides
+
+            if ride.start_time <= time <= ride.end_time:
+                if not has_ride:
+                    self.active_rides.append(ride)
+            elif has_ride:
+                self.active_rides.remove(ride)
 
     def calculate_statistics(self) -> Dict[str, Tuple[str, float]]:
         """Return a dictionary containing statistics for this simulation.
@@ -135,12 +154,20 @@ def create_stations(stations_file: str) -> Dict[str, 'Station']:
 
     stations = {}
     for s in raw_stations['stations']:
+        long = float(s["lo"])
+        lat = float(s["la"])
+        num_bikes = int(s["da"])
+        cap = int(s["ba"]) + num_bikes
+        name = s["s"]
+        id_ = s["n"]
+
+        stations[id_] = Station((long, lat), cap, num_bikes, name)
+
         # Extract the relevant fields from the raw station JSON.
         # s is a dictionary with the keys 'n', 's', 'la', 'lo', 'da', and 'ba'
         # as described in the assignment handout.
         # NOTE: all of the corresponding values are strings, and so you need
         # to convert some of them to numbers explicitly using int() or float().
-        pass
 
     return stations
 
@@ -160,15 +187,26 @@ def create_rides(rides_file: str,
     rides = []
     with open(rides_file) as file:
         for line in csv.reader(file):
-            # line is a list of strings, following the format described
-            # in the assignment handout.
-            #
-            # Convert between a string and a datetime object
-            # using the function datetime.strptime and the DATETIME_FORMAT
-            # constant we defined above. Example:
-            # >>> datetime.strptime('2017-06-01 8:00', DATETIME_FORMAT)
-            # datetime.datetime(2017, 6, 1, 8, 0)
-            pass
+            start = line[0]
+            start_id = line[1]
+            end = line[2]
+            end_id = line[3]
+
+            try:
+                rides.append(Ride(stations[start_id], stations[end_id], (
+                    datetime.strptime(start, DATETIME_FORMAT), datetime.strptime(end, DATETIME_FORMAT))))
+            except KeyError:
+                print("Found station that does not correspond to a real station")
+
+                # start datetime, start station id, end datetime, end station id
+                # line is a list of strings, following the format described
+                # in the assignment handout.
+                #
+                # Convert between a string and a datetime object
+                # using the function datetime.strptime and the DATETIME_FORMAT
+                # constant we defined above. Example:
+                # >>> datetime.strptime('2017-06-01 8:00', DATETIME_FORMAT)
+                # datetime.datetime(2017, 6, 1, 8, 0)
 
     return rides
 
@@ -214,8 +252,11 @@ class RideEndEvent(Event):
 def sample_simulation() -> Dict[str, Tuple[str, float]]:
     """Run a sample simulation. For testing purposes only."""
     sim = Simulation('stations.json', 'sample_rides.csv')
+
     sim.run(datetime(2017, 6, 1, 8, 0, 0),
             datetime(2017, 6, 1, 9, 0, 0))
+    # sim.run(datetime(2017, 7, 1, 0, 0, 0),
+    #         datetime(2017, 7, 1, 1, 0, 0))
     return sim.calculate_statistics()
 
 
