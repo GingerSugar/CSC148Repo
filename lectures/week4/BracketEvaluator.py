@@ -1,29 +1,24 @@
 from Stack import Stack
 
+_BRACKETS = {
+    ')': '(',
+    ']': '[',
+    '}': '{'
+}
+
 
 def is_balanced(equation: str) -> bool:
-    s = Stack()
+    bracket_stack = Stack()
     for i in equation:
-        if i == "(":
-            s.push("(")
-        elif i == ")":
-            if s.pop() != "(":
-                break
-        elif i == "{":
-            s.push("{")
-        elif i == "}":
-            if s.pop() != "{":
-                break
-        elif i == "[":
-            s.push("[")
-        elif i == "]":
-            if s.pop() != "[":
-                break
-    else:
-        return True
-    return False
+        if i in _BRACKETS.values():
+            bracket_stack.push(i)
+        elif i in _BRACKETS.keys():
+            if bracket_stack.pop() != _BRACKETS[i]:
+                return False
+    return bracket_stack.is_empty()
 
 
 if __name__ == "__main__":
-    assert is_balanced("(x-3){}[]") is True
-    assert is_balanced("{[}]") is False
+    while True:
+        s = input("Enter equation: ")
+        print(f"Equation {s} is balanced: {is_balanced(s)}")
