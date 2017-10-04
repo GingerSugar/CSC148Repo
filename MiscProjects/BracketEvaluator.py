@@ -1,4 +1,4 @@
-from Stack import Stack
+from MiscProjects.Stack import Stack
 
 _BRACKETS = {
     ')': '(',
