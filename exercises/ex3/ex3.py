@@ -34,9 +34,37 @@ def reverse(stack: Stack) -> None:
     1
     >>> stack.pop()
     2
+    >>> stack2 = Stack()
+    >>> stack2.push(1)
+    >>> stack2.push(2)
+    >>> stack2.push(3)
+    >>> stack2.push(4)
+    >>> reverse(stack2)
+    >>> stack2.pop()
+    1
+    >>> stack2.pop()
+    2
+    >>> stack2.pop()
+    3
+    >>> stack2.pop()
+    4
+    >>> stack3 = Stack()
+    >>> reverse(stack3)
+    >>> stack3.is_empty()
+    True
     """
-    # TODO: implement this function.
-    pass
+    if stack.is_empty():
+        return
+
+    temp1 = Stack()
+    temp2 = Stack()
+
+    while not stack.is_empty():
+        temp1.push(stack.pop())
+    while not temp1.is_empty():
+        temp2.push(temp1.pop())
+    while not temp2.is_empty():
+        stack.push(temp2.pop())
 
 
 def merge_alternating(stack1: Stack, stack2: Stack) -> Stack:
@@ -195,9 +223,11 @@ class PeopleChain:
 
 if __name__ == '__main__':
     import doctest
+
     doctest.testmod()
 
     import python_ta
+
     python_ta.check_all(config={
         'allowed-import-modules': [
             'typing', 'doctest', 'python_ta', 'stack'

@@ -16,7 +16,7 @@ from typing import Generic, List, TypeVar
 
 
 class EmptyStackError(Exception):
-    """Exception raised when an error occurs."""
+    """Error raised when an error occurs."""
     pass
 
 
@@ -76,19 +76,6 @@ class Stack(Generic[T]):
         else:
             return self._items.pop()
 
-    # NOTE: You aren't responsible for understanding this part of the code,
-    # but we put it in to prevent you to accessing _items when completing
-    # this exercise.
-    @property
-    def _items(self):
-        raise AttributeError(
-            'You are trying to access a private attribute! '
-            'This is not the right way to do this exercise!'
-        )
-
-    @_items.setter
-    def _items(self, _):
-        raise AttributeError(
-            'You are trying to access a private attribute! '
-            'This is not the right way to do this exercise!'
-        )
+            # NOTE: We removed the "property" part because we were trying
+            # to be too clever for our own good.
+            # But still don't access _items outside of the Stack class! :)
