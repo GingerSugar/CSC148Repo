@@ -87,4 +87,5 @@ def test_get_nth_on_out_of_bounds_index(names: List[str], offset: int):
 
 if __name__ == '__main__':
     import pytest
+
     pytest.main()
